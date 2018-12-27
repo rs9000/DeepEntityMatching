@@ -4,6 +4,35 @@ import pandas as pd
 import torch
 import recordlinkage
 from sklearn.utils import shuffle
+import argparse
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--source1', type=str, default="f1_parse.csv",
+                        help='Source file 1', metavar='')
+    parser.add_argument('--source2', type=str, default="f2_parse.csv",
+                        help='Source file 2', metavar='')
+    parser.add_argument('--separator', type=str, default=';',
+                        help='Number of feature-maps ', metavar='')
+    parser.add_argument('--n_attrs', type=int, default=5,
+                        help='Attributes in sources files', metavar='')
+    parser.add_argument('--mapping', type=str, default='map.csv',
+                        help='GT mapping file', metavar='')
+    parser.add_argument('--blocking_size', type=int, default=5,
+                        help='Number of words in answers dictionary', metavar='')
+    parser.add_argument('--blocking_attr', type=str, default='title',
+                        help='Number of words in answers dictionary', metavar='')
+    parser.add_argument('--word_embed', type=str, default='glove.6B.50d.txt',
+                        help='Word embedding file (es. GloVe)', metavar='')
+    parser.add_argument('--word_embed_size', type=int, default=50,
+                        help='word embedding vector size', metavar='')
+    parser.add_argument('--save_model', type=str, default='checkpoint.pt',
+                        help='save model file', metavar='')
+    parser.add_argument('--load_model', type=str, default='',
+                        help='load model file', metavar='')
+    return parser.parse_args()
+
 
 def get_label(map, v1, v2):
     label = torch.LongTensor([0]).cuda()
@@ -91,21 +120,22 @@ def train(model, df1, df2, map, train_set, test_set):
 
 
 if __name__ == "__main__":
-    # writer = SummaryWriter()
+    args = parse_arguments()
 
-    df1 = pd.read_csv("C://Users//rsdic//Desktop//database//dataset//f1_parse.csv", ";")
-    df2 = pd.read_csv("C://Users//rsdic//Desktop//database//dataset//f2_parse.csv", ";")
-    map = pd.read_csv("C://Users//rsdic//Desktop//database//dataset//map.csv", ";")
+    df1 = pd.read_csv(args.source1, args.separator)
+    df2 = pd.read_csv(args.source2, args.separator)
+    map = pd.read_csv(args.mapping, args.separator)
 
     indexer = recordlinkage.Index()
-    indexer.sortedneighbourhood('title', window=5)
+    indexer.sortedneighbourhood(args.blocking_attr, window=args.blocking_size)
     candidate_links = shuffle(indexer.index(df1, df2))
     train_set = candidate_links[:int(3 * len(candidate_links) / 4)]
     test_set = candidate_links[int(3 * len(candidate_links) / 4):]
 
-    model = NLP().cuda()
+    model = NLP(args.word_embed, args.word_embed_size, args.n_attrs).cuda()
     print(model)
 
-    model.load_state_dict(torch.load("checkpoint.pt"))
+    if args.load_model != '':
+        model.load_state_dict(torch.load(args.load_model))
 
     train(model, df1, df2, map, train_set, test_set)

@@ -18,13 +18,13 @@ def loadGloveModel(gloveFile):
 
 
 class NLP(nn.Module):
-    def __init__(self ):
+    def __init__(self, word_embed, word_embed_size, n_attrs):
         super(NLP, self).__init__()
 
-        self.n_attr = 5
-        self.size_embed = 50
-        self.words = loadGloveModel("glove.6B.50d.txt")
-        self.fc1 = nn.Linear(5, 50)
+        self.n_attr = n_attrs
+        self.size_embed = word_embed_size
+        self.words = loadGloveModel(word_embed)
+        self.fc1 = nn.Linear(n_attrs, 50)
         self.fc2 = nn.Linear(50, 2)
         self.probs = nn.LogSoftmax(dim=-1)
         self.reset_parameters()
