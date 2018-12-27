@@ -14,7 +14,7 @@ def parse_arguments():
     parser.add_argument('--source2', type=str, default="f2_parse.csv",
                         help='Source file 2', metavar='')
     parser.add_argument('--separator', type=str, default=';',
-                        help='Number of feature-maps ', metavar='')
+                        help='Char separator in CSV source files', metavar='')
     parser.add_argument('--n_attrs', type=int, default=5,
                         help='Attributes in sources files', metavar='')
     parser.add_argument('--mapping', type=str, default='map.csv',
