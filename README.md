@@ -16,7 +16,7 @@ arguments:
   --separator         Char separator in CSV source files
   --n_attrs           Number of attributes in sources files 
   --mapping           Partial ground truth mapping of sources files
-  --blocking_size     Windows size of blocking method (Nearest Neib)
+  --blocking_size     Window size of the blocking method (Sorted Neighbourhood)
   --blocking_attr     Attributes of blocking
   --word_embed        Word embedding file
   --word_embed_size   Word embedding vector size
