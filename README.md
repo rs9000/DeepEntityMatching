@@ -2,7 +2,7 @@
 Entity resolution in PyTorch<br>
 Train a classifier to find entity matching between two sources.
 
-## Slide
+## Slides
 https://rs9000.github.io/assets/docs/slide.pdf
 
 ## Word embedding
