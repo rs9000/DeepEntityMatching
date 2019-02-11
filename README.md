@@ -3,12 +3,11 @@ Entity resolution in PyTorch<br>
 Train a classifier to find entity matching between two sources.
 
 ## Slide
-https://nlp.stanford.edu/projects/glove/
-
+https://rs9000.github.io/assets/docs/slide.pdf
 
 ## Word embedding
 This model require GloVe or another word embedding<br>
-https://rs9000.github.io/assets/docs/slide.pdf
+https://nlp.stanford.edu/projects/glove/
 
 ### How to use
 ```
