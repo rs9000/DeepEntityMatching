@@ -35,7 +35,7 @@ def parse_arguments():
 
 
 def get_label(map, v1, v2):
-    label = torch.LongTensor([0]).cuda()
+    label = torch.LongTensor([0]).to(device)
     loc1 = map[map["idACM"] == v1]
     loc2 = map[map["idDBLP"] == v2]
     if not loc1.empty and not loc2.empty:
@@ -93,8 +93,8 @@ def train(model, df1, df2, map, train_set, test_set):
             label = get_label(map, df1.values[ix1][0], df2.values[ix2][0])
             out = model(df1.values[ix1], df2.values[ix2])
 
-            weight = torch.tensor([0.5, 1]).cuda()
-            criterion = torch.nn.NLLLoss(weight=weight).cuda()
+            weight = torch.tensor([0.5, 1]).to(device)
+            criterion = torch.nn.NLLLoss(weight=weight).to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
             loss += criterion(out, label)
@@ -121,6 +121,7 @@ def train(model, df1, df2, map, train_set, test_set):
 
 if __name__ == "__main__":
     args = parse_arguments()
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     df1 = pd.read_csv(args.source1, args.separator)
     df2 = pd.read_csv(args.source2, args.separator)
@@ -132,7 +133,7 @@ if __name__ == "__main__":
     train_set = candidate_links[:int(3 * len(candidate_links) / 4)]
     test_set = candidate_links[int(3 * len(candidate_links) / 4):]
 
-    model = NLP(args.word_embed, args.word_embed_size, args.n_attrs).cuda()
+    model = NLP(args.word_embed, args.word_embed_size, args.n_attrs, device).to(device)
     print(model)
 
     if args.load_model != '':

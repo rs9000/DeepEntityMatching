@@ -18,7 +18,7 @@ def loadGloveModel(gloveFile):
 
 
 class NLP(nn.Module):
-    def __init__(self, word_embed, word_embed_size, n_attrs):
+    def __init__(self, word_embed, word_embed_size, n_attrs, device):
         super(NLP, self).__init__()
 
         self.n_attr = n_attrs
@@ -27,6 +27,7 @@ class NLP(nn.Module):
         self.fc1 = nn.Linear(n_attrs, 50)
         self.fc2 = nn.Linear(50, 2)
         self.probs = nn.LogSoftmax(dim=-1)
+        self.device = device
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -41,13 +42,13 @@ class NLP(nn.Module):
 
         for i in range(self.n_attr):
             count = 0
-            attr = torch.zeros(self.size_embed).cuda()
+            attr = torch.zeros(self.size_embed).to(self.device)
             for token in str(x1[i]).split(" "):
                 token = token.replace(".0", "")
                 if token.lower() in self.words:
-                    attr = attr.add(torch.tensor(self.words[token.lower()]).cuda())
+                    attr = attr.add(torch.tensor(self.words[token.lower()]).to(self.device))
                 else:
-                    attr = attr.add(torch.tensor(self.words['<unk>']).cuda())
+                    attr = attr.add(torch.tensor(self.words['<unk>']).to(self.device))
                 count += 1
             t1.append(attr.div(count))
         return torch.stack(t1)
