@@ -10,6 +10,8 @@ This model require GloVe or another word embedding<br>
 https://nlp.stanford.edu/projects/glove/
 
 ### How to use
+
+#### Train classifier
 ```
 usage: train.py [-args]
 
@@ -27,7 +29,30 @@ arguments:
   --load_model        Load pre-trained model
 ```
 
+#### Merge tables with pre-trained classifier
+
+```
+usage: merge_csv.py [-args]
+
+arguments:
+  --source1           Source file 1
+  --source2           Source file 2
+  --output_file       Output file
+  --separator         Char separator in CSV source files
+  --n_attrs           Number of attributes in sources files 
+  --blocking_size     Window size of the blocking method (Sorted Neighbourhood)
+  --blocking_attr     Attributes of blocking
+  --word_embed        Word embedding file
+  --word_embed_size   Word embedding vector size
+  --load_model        Load pre-trained model
+```
+
+
+
 ## Output 
+
+### Train 
+
 ```
 Loading Glove Model...
 ...Done!  400001  words loaded!
@@ -52,4 +77,16 @@ Accuracy: 0.954215522054718
 #True Positive: 381 #FP: 46
 #True Negative: 1328 #FN 36
 
+```
+
+### Merge
+
+```
+Loading Glove Model...
+...Done!  400001  words loaded!
+Start Merging... (it may take a while)
+Found: 1580 duplicates
+Merging files....
+Done!
+File created: clean_table.csv
 ```
